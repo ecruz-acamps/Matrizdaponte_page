@@ -1,8 +1,8 @@
 # Configuração do painel (Sveltia CMS). Documentação: https://sveltiacms.app/en/docs
-# >>> Antes de publicar, troque os dois valores marcados com TROCAR <<<
+# >>> Antes de usar o painel, troque o base_url (marcado com TROCAR) pelo endereço do autenticador <<<
 backend:
   name: github
-  repo: TROCAR/site-paroquia-ponte # dono/nome do repositório no GitHub
+  repo: ecruz-acamps/matrizdaponte_page
   branch: main
   base_url: https://TROCAR.workers.dev # endereço do autenticador (sveltia-cms-auth) no Cloudflare
   commit_messages:

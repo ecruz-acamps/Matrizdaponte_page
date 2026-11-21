@@ -45,7 +45,7 @@ Você vai precisar de:
    - **Build output directory:** `dist`
    - Em **Environment variables**, adicione `NODE_VERSION` = `22`.
 4. Clique em **Save and Deploy**. Em 1 ou 2 minutos o site fica no ar num endereço provisório como
-   `site-paroquia-ponte.pages.dev`. Abra e confira.
+   `matrizdaponte-page.pages.dev`. Abra e confira.
 
 A partir de agora, toda alteração salva no repositório (inclusive pelo painel) publica o site
 sozinha.
@@ -85,12 +85,12 @@ Cloudflare e um "OAuth App" no GitHub.
 
 ### 3.4 Apontar o painel para o repositório e o autenticador
 
-No arquivo `public/admin/config.yml`, troque as duas linhas marcadas com `TROCAR`:
+No arquivo `public/admin/config.yml`, troque a linha `base_url` (marcada com `TROCAR`) pelo endereço do autenticador do passo 3.1:
 
 ```yaml
 backend:
   name: github
-  repo: SEU-USUARIO/site-paroquia-ponte
+  repo: ecruz-acamps/matrizdaponte_page
   branch: main
   base_url: https://sveltia-cms-auth.SEU-USUARIO.workers.dev
 ```
