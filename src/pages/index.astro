@@ -4,6 +4,7 @@ import MissasHoje from '../components/MissasHoje.astro';
 import NoticiaCard from '../components/NoticiaCard.astro';
 import ListaEventos from '../components/ListaEventos.astro';
 import TituloOrnado from '../components/TituloOrnado.astro';
+import Padroeiros from '../components/Padroeiros.astro';
 import Icone from '../components/Icone.astro';
 import { paroquia, getComunidades, getNoticias, getEventos, nomeComunidade, ordenarHorarios, diasDaSemana } from '../lib/data';
 
@@ -43,6 +44,8 @@ const destaques = [
   <div class="faixa-cta">
     <a href="/eventos/">Clique para ver a <b>programação da semana</b> →</a>
   </div>
+
+  <Padroeiros />
 
   <section class="section">
     <div class="container">

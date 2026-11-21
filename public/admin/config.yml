@@ -255,6 +255,17 @@ collections:
           - { name: lema, label: Frase de apresentação, widget: text }
           - { name: logo, label: Logotipo, widget: image, required: false }
           - { name: imagem_capa, label: Foto de capa da página inicial, widget: image, required: false }
+          - name: padroeiros
+            label: Padroeiros da paróquia (destaque na página inicial)
+            label_singular: padroeiro
+            widget: list
+            summary: '{{nome}}'
+            fields:
+              - { name: nome, label: Nome, widget: string }
+              - { name: titulo, label: Título, widget: string, required: false, hint: 'Ex.: Apóstolo de Jesus' }
+              - { name: festa, label: Data da festa, widget: string, required: false, hint: 'Ex.: 28 de outubro' }
+              - { name: imagem, label: Imagem do santo, widget: image, required: false, hint: 'Use de preferência uma foto em pé (vertical) da imagem que está na igreja.' }
+              - { name: texto, label: Texto, widget: text, required: false }
           - name: aviso
             label: Faixa de aviso no topo do site
             widget: object

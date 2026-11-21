@@ -3,6 +3,7 @@ import { getCollection, render } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import PaginaTopo from '../components/PaginaTopo.astro';
 import HorarioCard from '../components/HorarioCard.astro';
+import Padroeiros from '../components/Padroeiros.astro';
 import { getComunidades } from '../lib/data';
 
 export async function getStaticPaths() {
@@ -30,6 +31,7 @@ const comunidades = await getComunidades();
         </div>
       )}
 
+      {pagina.id === 'padroeiros' && <div style="margin:24px -20px 0"><Padroeiros comTitulo={false} /></div>}
       {pagina.id === 'padroeiros' && (
         <div class="tabela-wrap" style="margin-top:24px">
           <table class="tabela">

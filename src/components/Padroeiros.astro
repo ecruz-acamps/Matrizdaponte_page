@@ -1,0 +1,30 @@
+---
+import TituloOrnado from './TituloOrnado.astro';
+import { paroquia } from '../lib/data';
+interface Props { comTitulo?: boolean }
+const { comTitulo = true } = Astro.props;
+const padroeiros = paroquia.padroeiros ?? [];
+---
+{padroeiros.length > 0 && (
+  <section class="section padroeiros-secao">
+    <div class="container">
+      {comTitulo && <TituloOrnado titulo="Nossos padroeiros" subtitulo="São Judas Tadeu e São João Batista, rogai por nós!" />}
+      <div class="padroeiros">
+        {padroeiros.map((p) => (
+          <article class="padroeiro">
+            <div class="moldura">
+              {p.imagem && <img src={p.imagem} alt={`Imagem de ${p.nome}`} loading="lazy" />}
+            </div>
+            <div class="padroeiro-texto">
+              {p.titulo && <div class="eyebrow">{p.titulo}</div>}
+              <h3>{p.nome}</h3>
+              {p.festa && <div class="festa">Festa: {p.festa}</div>}
+              {p.texto && <p>{p.texto}</p>}
+              <p class="rogai">{p.nome}, rogai por nós.</p>
+            </div>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

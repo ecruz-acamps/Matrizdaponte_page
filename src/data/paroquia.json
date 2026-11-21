@@ -7,6 +7,22 @@
   "lema": "Evangelizar a partir da Palavra de Deus e da Eucaristia, com opção preferencial pelos pobres, para que todos tenham vida (Jo 10,10).",
   "logo": "",
   "imagem_capa": "",
+  "padroeiros": [
+    {
+      "nome": "São Judas Tadeu",
+      "titulo": "Apóstolo de Jesus",
+      "festa": "28 de outubro",
+      "imagem": "/img/sao-judas-tadeu.svg",
+      "texto": "Um dos doze apóstolos, parente de Jesus segundo a tradição e autor de uma das cartas do Novo Testamento. Anunciou o Evangelho com coragem até o martírio. É invocado como o santo das causas difíceis e desesperadas."
+    },
+    {
+      "nome": "São João Batista",
+      "titulo": "Precursor do Senhor",
+      "festa": "24 de junho",
+      "imagem": "/img/sao-joao-batista.svg",
+      "texto": "Filho de Isabel e Zacarias, preparou o caminho do Messias pregando a conversão e batizando no rio Jordão. Apontou Jesus como o Cordeiro de Deus e deu a vida pela verdade."
+    }
+  ],
   "aviso": {
     "ativo": false,
     "texto": "",
@@ -26,9 +42,21 @@
     "jornal": "https://www.flipsnack.com/paroquiaponte/"
   },
   "links_uteis": [
-    { "nome": "Liturgia diária", "url": "https://liturgia.cancaonova.com/" },
-    { "nome": "Santa Sé", "url": "https://www.vatican.va/content/vatican/pt.html" },
-    { "nome": "Arquidiocese de Florianópolis", "url": "https://www.arquifloripa.org.br/" },
-    { "nome": "Aleteia", "url": "https://pt.aleteia.org/" }
+    {
+      "nome": "Liturgia diária",
+      "url": "https://liturgia.cancaonova.com/"
+    },
+    {
+      "nome": "Santa Sé",
+      "url": "https://www.vatican.va/content/vatican/pt.html"
+    },
+    {
+      "nome": "Arquidiocese de Florianópolis",
+      "url": "https://www.arquifloripa.org.br/"
+    },
+    {
+      "nome": "Aleteia",
+      "url": "https://pt.aleteia.org/"
+    }
   ]
 }
