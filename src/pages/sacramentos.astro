@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PaginaTopo from '../components/PaginaTopo.astro';
+const paginas = (await getCollection('paginas')).sort((a, b) => a.data.ordem - b.data.ordem);
+const grupos = [
+  { id: 'sacramentos', titulo: 'Sacramentos' },
+  { id: 'paroquia', titulo: 'Vida paroquial' },
+];
+---
+<Base titulo="Sacramentos e serviços" descricao="Batismo, catequese, confissões, matrimônio, dízimo e mais.">
+  <PaginaTopo eyebrow="Secretaria" titulo="Sacramentos e serviços" subtitulo="Orientações para batismo, catequese, confissão, casamento e a vida da paróquia." />
+  {grupos.map((g, i) => (
+    <section class:list={['section', { 'section-alt': i % 2 === 1 }]}>
+      <div class="container">
+        <div class="section-head"><h2>{g.titulo}</h2></div>
+        <div class="grid grid-3">
+          {paginas.filter((p) => p.data.grupo === g.id).map((p) => (
+            <a class="card" href={`/${p.id}/`}>
+              <div class="card-body"><h3>{p.data.titulo}</h3>{p.data.resumo && <p>{p.data.resumo}</p>}<span class="link-seta" style="margin-top:auto;color:var(--azul)">Ler mais</span></div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+</Base>

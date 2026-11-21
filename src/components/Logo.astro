@@ -1,0 +1,12 @@
+---
+import { paroquia } from '../lib/data';
+---
+{paroquia.logo ? (
+  <img src={paroquia.logo} alt="" width="44" height="44" />
+) : (
+  <svg viewBox="0 0 48 48" aria-hidden="true">
+    <circle cx="24" cy="24" r="23" fill="#1d3557" />
+    <circle cx="24" cy="24" r="19" fill="none" stroke="#c9962b" stroke-width="1.5" />
+    <path d="M24 10v28M16 18h16" stroke="#f6ecd6" stroke-width="3.2" stroke-linecap="round" />
+  </svg>
+)}

@@ -1,0 +1,15 @@
+nome: Nossa Senhora de Lourdes
+bairro: Jardim Eucaliptus
+subdominio:
+ordem: 5
+padroeiros:
+  - Nossa Senhora de Lourdes
+  - Sagrado Coração de Jesus
+endereco:
+foto:
+descricao:
+missas:
+  - { dia: Sábado, hora: 18h }
+confissoes:
+  - { dia: Sábado, hora: 17h às 17h45 }
+outros_horarios: []

@@ -1,0 +1,18 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icone from './Icone.astro';
+import { formatarData } from '../lib/data';
+interface Props { noticia: CollectionEntry<'noticias'>; rotulo?: string }
+const { noticia, rotulo } = Astro.props;
+const n = noticia.data;
+---
+<a class="card" href={`/noticias/${noticia.id}/`}>
+  <div class="card-img">
+    {n.capa ? <img src={n.capa} alt="" loading="lazy" /> : <Icone nome="cruz" tamanho={40} />}
+  </div>
+  <div class="card-body">
+    <div class="meta"><time datetime={n.data.toISOString()}>{formatarData(n.data)}</time>{rotulo && <span class="tag">{rotulo}</span>}</div>
+    <h3>{n.titulo}</h3>
+    {n.resumo && <p>{n.resumo}</p>}
+  </div>
+</a>

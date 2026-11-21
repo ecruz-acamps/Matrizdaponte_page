@@ -1,0 +1,26 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+const pastorais = (await getCollection('pastorais')).sort((a, b) => a.data.nome.localeCompare(b.data.nome, 'pt-BR'));
+const itens = await Promise.all(pastorais.map(async (p) => ({ p, Content: (await render(p)).Content, temTexto: !!p.body?.trim() })));
+---
+<Base titulo="Pastorais e movimentos" descricao="Pastorais, movimentos e grupos da paróquia.">
+  <PaginaTopo eyebrow="Participe" titulo="Pastorais e movimentos" subtitulo="Há um lugar para você servir. Procure a secretaria para conhecer e participar de uma pastoral." />
+  <section class="section">
+    <div class="container grid grid-2">
+      {itens.map(({ p, Content, temTexto }) => (
+        <article class="card" id={p.id}>
+          {p.data.imagem && <div class="card-img"><img src={p.data.imagem} alt="" loading="lazy" /></div>}
+          <div class="card-body">
+            <h3>{p.data.nome}</h3>
+            {p.data.resumo && <p>{p.data.resumo}</p>}
+            {p.data.encontros && <div class="meta"><span>Encontros: {p.data.encontros}</span></div>}
+            {p.data.contato && <div class="meta"><span>Contato: {p.data.contato}</span></div>}
+            {temTexto && <details><summary style="cursor:pointer;font-weight:600;color:var(--azul)">Saiba mais</summary><div class="prosa" style="margin-top:8px"><Content /></div></details>}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</Base>

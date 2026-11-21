@@ -1,0 +1,27 @@
+---
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+import Icone from '../../components/Icone.astro';
+import { getGaleria, formatarData } from '../../lib/data';
+const albuns = await getGaleria();
+---
+<Base titulo="Galeria de fotos" descricao="Fotos das celebrações e eventos da paróquia.">
+  <PaginaTopo eyebrow="Memórias" titulo="Galeria de fotos" />
+  <section class="section">
+    <div class="container">
+      {albuns.length ? (
+        <div class="grid grid-3">
+          {albuns.map((g) => {
+            const capa = g.data.capa || g.data.fotos[0]?.imagem;
+            return (
+              <a class="card" href={`/galeria/${g.id}/`}>
+                <div class="card-img">{capa ? <img src={capa} alt="" loading="lazy" /> : <Icone nome="cruz" tamanho={40} />}</div>
+                <div class="card-body"><div class="meta">{formatarData(g.data.data)} · {g.data.fotos.length} fotos</div><h3>{g.data.titulo}</h3></div>
+              </a>
+            );
+          })}
+        </div>
+      ) : <div class="vazio">Nenhum álbum publicado ainda.</div>}
+    </div>
+  </section>
+</Base>

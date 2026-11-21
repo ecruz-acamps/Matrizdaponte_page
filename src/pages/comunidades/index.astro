@@ -1,0 +1,24 @@
+---
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+import Icone from '../../components/Icone.astro';
+import { getComunidades } from '../../lib/data';
+const comunidades = await getComunidades();
+---
+<Base titulo="Comunidades" descricao="As comunidades que formam a paróquia.">
+  <PaginaTopo eyebrow="Nossa paróquia" titulo="Comunidades" subtitulo="Conheça as comunidades da paróquia, seus padroeiros e horários." />
+  <section class="section">
+    <div class="container grid grid-3">
+      {comunidades.map((c) => (
+        <a class="card" href={`/c/${c.id}/`}>
+          <div class="card-img">{c.data.foto ? <img src={c.data.foto} alt="" loading="lazy" /> : <Icone nome="igreja" tamanho={40} />}</div>
+          <div class="card-body">
+            <div class="meta"><span class="tag">{c.data.bairro}</span></div>
+            <h3>{c.data.nome}</h3>
+            {c.data.padroeiros.length > 0 && <p>Padroeiros: {c.data.padroeiros.join(', ')}</p>}
+          </div>
+        </a>
+      ))}
+    </div>
+  </section>
+</Base>

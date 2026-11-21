@@ -1,0 +1,11 @@
+---
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+import ListaEventos from '../../components/ListaEventos.astro';
+import { getEventos } from '../../lib/data';
+const eventos = await getEventos();
+---
+<Base titulo="Agenda" descricao="Agenda de eventos, festas e encontros da paróquia.">
+  <PaginaTopo eyebrow="Agenda" titulo="Próximos eventos" subtitulo="Festas, encontros, formações e celebrações especiais da paróquia e das comunidades." />
+  <section class="section"><div class="container"><ListaEventos eventos={eventos} /></div></section>
+</Base>

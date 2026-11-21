@@ -1,0 +1,92 @@
+---
+import Base from '../layouts/Base.astro';
+import MissasHoje from '../components/MissasHoje.astro';
+import NoticiaCard from '../components/NoticiaCard.astro';
+import ListaEventos from '../components/ListaEventos.astro';
+import Icone from '../components/Icone.astro';
+import { paroquia, getComunidades, getNoticias, getEventos, nomeComunidade } from '../lib/data';
+
+const comunidades = await getComunidades();
+const noticias = (await getNoticias()).slice(0, 6);
+const eventos = await getEventos();
+---
+<Base imagem={paroquia.imagem_capa || null}>
+  <section class:list={['hero', { 'com-imagem': !!paroquia.imagem_capa }]} style={paroquia.imagem_capa ? `background-image:url('${paroquia.imagem_capa}')` : undefined}>
+    <div class="container">
+      <div class="eyebrow">{paroquia.arquidiocese}</div>
+      <h1>{paroquia.nome}</h1>
+      <p class="lema">{paroquia.lema}</p>
+      <div class="acoes">
+        <a class="btn btn-primario" href="/horarios/">Horários de missas</a>
+        <a class="btn btn-claro" href="/contato/">Fale com a secretaria</a>
+      </div>
+    </div>
+  </section>
+
+  <MissasHoje comunidades={comunidades} />
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Fique por dentro</div><h2>Notícias e avisos</h2></div>
+        <a class="link-seta" href="/noticias/">Todas as notícias</a>
+      </div>
+      {noticias.length ? (
+        <div class="grid grid-3">
+          {noticias.map((n) => <NoticiaCard noticia={n} rotulo={n.data.comunidade !== 'paroquia' ? nomeComunidade(n.data.comunidade, comunidades) : undefined} />)}
+        </div>
+      ) : <div class="vazio">Nenhuma notícia publicada ainda.</div>}
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Agenda</div><h2>Próximos eventos</h2></div>
+        <a class="link-seta" href="/eventos/">Agenda completa</a>
+      </div>
+      <ListaEventos eventos={eventos} limite={6} />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head">
+        <div><div class="eyebrow">Nossa paróquia</div><h2>Comunidades</h2></div>
+        <a class="link-seta" href="/comunidades/">Ver comunidades</a>
+      </div>
+      <div class="grid grid-3">
+        {comunidades.map((c) => (
+          <a class="card" href={`/c/${c.id}/`}>
+            <div class="card-img">{c.data.foto ? <img src={c.data.foto} alt="" loading="lazy" /> : <Icone nome="igreja" tamanho={40} />}</div>
+            <div class="card-body">
+              <div class="meta"><span class="tag">{c.data.bairro}</span></div>
+              <h3>{c.data.nome}</h3>
+              {c.data.padroeiros.length > 0 && <p>Padroeiros: {c.data.padroeiros.join(', ')}</p>}
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container contato-grid">
+      <div>
+        <div class="eyebrow">Secretaria paroquial</div>
+        <h2>Estamos aqui para ajudar</h2>
+        <ul class="info-lista">
+          <li><Icone nome="relogio" /><span>{paroquia.secretaria_horario}</span></li>
+          <li><Icone nome="local" /><span>{paroquia.endereco}</span></li>
+          <li><Icone nome="telefone" /><a href={`tel:+55${paroquia.telefone.replace(/\D/g, '')}`}>{paroquia.telefone}</a></li>
+          <li><Icone nome="email" /><a href={`mailto:${paroquia.email}`}>{paroquia.email}</a></li>
+        </ul>
+        <div class="acoes" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+          {paroquia.whatsapp && <a class="btn btn-primario" href={`https://wa.me/${paroquia.whatsapp}`} target="_blank" rel="noopener">Conversar no WhatsApp</a>}
+          <a class="btn btn-contorno" href="/sacramentos/">Batismo, catequese e casamento</a>
+        </div>
+      </div>
+      <iframe class="mapa" src={paroquia.mapa_embed} loading="lazy" title="Mapa da Igreja Matriz" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+</Base>

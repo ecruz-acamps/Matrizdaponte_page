@@ -1,0 +1,20 @@
+---
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+import NoticiaCard from '../../components/NoticiaCard.astro';
+import { getNoticias, getComunidades, nomeComunidade } from '../../lib/data';
+const noticias = await getNoticias();
+const comunidades = await getComunidades();
+---
+<Base titulo="Notícias" descricao="Notícias e avisos da paróquia e das comunidades.">
+  <PaginaTopo eyebrow="Fique por dentro" titulo="Notícias e avisos" />
+  <section class="section">
+    <div class="container">
+      {noticias.length ? (
+        <div class="grid grid-3">
+          {noticias.map((n) => <NoticiaCard noticia={n} rotulo={n.data.comunidade !== 'paroquia' ? nomeComunidade(n.data.comunidade, comunidades) : undefined} />)}
+        </div>
+      ) : <div class="vazio">Nenhuma notícia publicada ainda.</div>}
+    </div>
+  </section>
+</Base>

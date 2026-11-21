@@ -1,0 +1,28 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { ordenarHorarios } from '../lib/data';
+interface Props { comunidade: CollectionEntry<'comunidades'>; tipo?: 'missas' | 'confissoes' | 'outros_horarios'; link?: boolean; titulo?: string }
+const { comunidade, tipo = 'missas', link = true, titulo } = Astro.props;
+const c = comunidade.data;
+const lista = ordenarHorarios(c[tipo]);
+---
+<article class="horario-card">
+  {titulo ? <h3>{titulo}</h3> : (
+    <>
+      <div class="bairro">{c.bairro}</div>
+      <h3>{link ? <a href={`/c/${comunidade.id}/`} style="text-decoration:none">{c.nome}</a> : c.nome}</h3>
+    </>
+  )}
+  {lista.length ? (
+    <ul class="horario-lista">
+      {lista.map((h) => (
+        <li>
+          <span class="dia">{h.dia}{h.observacao && <small>{h.observacao}</small>}</span>
+          <span class="hora">{h.hora}</span>
+        </li>
+      ))}
+    </ul>
+  ) : (
+    <p class="muted" style="margin:12px 0 0">Sem horários cadastrados.</p>
+  )}
+</article>

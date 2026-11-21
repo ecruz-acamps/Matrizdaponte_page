@@ -1,0 +1,15 @@
+nome: Nossa Senhora do Rosário
+bairro: Brejaru
+subdominio:
+ordem: 3
+padroeiros:
+  - Nossa Senhora do Rosário
+  - São Benedito
+endereco:
+foto:
+descricao:
+missas:
+  - { dia: Quinta-feira, hora: 19h30, observacao: Celebração da Palavra }
+  - { dia: Domingo, hora: 10h }
+confissoes: []
+outros_horarios: []

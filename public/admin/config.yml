@@ -1,0 +1,285 @@
+# Configuração do painel (Sveltia CMS). Documentação: https://sveltiacms.app/en/docs
+# >>> Antes de publicar, troque os dois valores marcados com TROCAR <<<
+backend:
+  name: github
+  repo: TROCAR/site-paroquia-ponte # dono/nome do repositório no GitHub
+  branch: main
+  base_url: https://TROCAR.workers.dev # endereço do autenticador (sveltia-cms-auth) no Cloudflare
+  commit_messages:
+    create: 'Criar {{collection}} "{{slug}}"'
+    update: 'Atualizar {{collection}} "{{slug}}"'
+    delete: 'Excluir {{collection}} "{{slug}}"'
+    uploadMedia: 'Enviar arquivo "{{path}}"'
+    deleteMedia: 'Excluir arquivo "{{path}}"'
+
+site_url: https://www.paroquiaponte.com.br
+display_url: https://www.paroquiaponte.com.br
+logo:
+  src: /favicon.svg
+
+media_folder: public/uploads
+public_folder: /uploads
+
+# Fotos de celular são grandes: o painel converte para WebP e reduz o tamanho ao enviar.
+media_libraries:
+  default:
+    config:
+      max_file_size: 15000000
+      slugify_filename: true
+      transformations:
+        raster_image:
+          format: webp
+          quality: 82
+          width: 1920
+          height: 1920
+
+slug:
+  encoding: ascii
+  clean_accents: true
+
+collections:
+  # ---------------------------------------------------------------- Notícias
+  - name: noticias
+    label: Notícias
+    label_singular: Notícia
+    description: Notícias e avisos. Escolha a comunidade para a notícia aparecer também no site dela. Deixe em branco para a paróquia toda.
+    folder: src/content/noticias
+    create: true
+    slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
+    identifier_field: titulo
+    summary: '{{data | date("DD/MM/YYYY")}} · {{titulo}}'
+    sortable_fields: { fields: [data, titulo], default: { field: data, direction: descending } }
+    view_filters:
+      - { label: Rascunhos, field: rascunho, pattern: true }
+    fields:
+      - { name: titulo, label: Título, widget: string }
+      - { name: data, label: Data, widget: datetime, type: date, default: '{{now}}' }
+      - name: comunidade
+        label: Comunidade
+        hint: Em branco = notícia da paróquia toda (aparece em todos os sites).
+        widget: relation
+        collection: comunidades
+        value_field: '{{slug}}'
+        search_fields: [nome, bairro]
+        display_fields: ['{{bairro}} – {{nome}}']
+        required: false
+      - { name: capa, label: Imagem de capa, widget: image, required: false }
+      - { name: resumo, label: Resumo, widget: text, required: false, hint: Uma ou duas frases que aparecem na lista de notícias. }
+      - { name: destaque, label: Destaque, widget: boolean, default: false, required: false }
+      - { name: rascunho, label: Rascunho (não publicar ainda), widget: boolean, default: false, required: false }
+      - { name: body, label: Texto, widget: markdown }
+
+  # ---------------------------------------------------------------- Eventos
+  - name: eventos
+    label: Agenda
+    label_singular: Evento
+    description: Eventos aparecem automaticamente até a data de término (ou de início) passar.
+    folder: src/content/eventos
+    create: true
+    slug: '{{inicio}}-{{slug}}'
+    identifier_field: titulo
+    summary: '{{inicio | date("DD/MM/YYYY")}} · {{titulo}}'
+    sortable_fields: { fields: [inicio, titulo], default: { field: inicio, direction: descending } }
+    fields:
+      - { name: titulo, label: Nome do evento, widget: string }
+      - { name: inicio, label: Data, widget: datetime, type: date }
+      - { name: fim, label: Data de término (se durar mais de um dia), widget: datetime, type: date, required: false }
+      - { name: horario, label: Horário, widget: string, required: false, hint: 'Ex.: 19h30' }
+      - { name: local, label: Local, widget: string, required: false }
+      - name: comunidade
+        label: Comunidade
+        hint: Em branco = evento da paróquia toda.
+        widget: relation
+        collection: comunidades
+        value_field: '{{slug}}'
+        search_fields: [nome, bairro]
+        display_fields: ['{{bairro}} – {{nome}}']
+        required: false
+      - { name: imagem, label: Imagem, widget: image, required: false }
+      - { name: body, label: Descrição, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- Comunidades
+  - name: comunidades
+    label: Comunidades
+    label_singular: Comunidade
+    description: Cada comunidade tem sua página própria e pode ter um subdomínio (ex. matriz.paroquiaponte.com.br).
+    folder: src/content/comunidades
+    extension: yml
+    format: yaml
+    create: true
+    slug: '{{bairro}}'
+    identifier_field: nome
+    summary: '{{bairro}} – {{nome}}'
+    sortable_fields: { fields: [ordem, bairro], default: { field: ordem, direction: ascending } }
+    fields:
+      - { name: nome, label: Nome da igreja / capela, widget: string }
+      - { name: bairro, label: Bairro ou nome curto, widget: string }
+      - name: subdominio
+        label: Subdomínio
+        widget: string
+        required: false
+        pattern: ['^[a-z0-9-]*$', 'Use só letras minúsculas, números e hífen, sem acentos.']
+        hint: 'Só a primeira parte, ex. "matriz" para matriz.paroquiaponte.com.br. Depois de salvar, o subdomínio também precisa ser adicionado no Cloudflare (veja o guia).'
+      - { name: ordem, label: Ordem na lista, widget: number, value_type: int, default: 10 }
+      - { name: padroeiros, label: Padroeiros, widget: list, required: false }
+      - { name: endereco, label: Endereço, widget: string, required: false }
+      - { name: foto, label: Foto da igreja, widget: image, required: false }
+      - { name: descricao, label: Apresentação, widget: text, required: false }
+      - name: missas
+        label: Horários de missa
+        label_singular: horário
+        widget: list
+        required: false
+        summary: '{{dia}} · {{hora}}'
+        fields:
+          - name: dia
+            label: Dia
+            widget: select
+            options: [Domingo, Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado, Segunda a sexta, Segunda a sábado, Todos os dias]
+          - { name: hora, label: Horário, widget: string, hint: 'Ex.: 19h30' }
+          - { name: observacao, label: Observação, widget: string, required: false, hint: 'Ex.: Celebração da Palavra' }
+      - name: confissoes
+        label: Horários de confissão
+        label_singular: horário
+        widget: list
+        required: false
+        summary: '{{dia}} · {{hora}}'
+        fields:
+          - name: dia
+            label: Dia
+            widget: select
+            options: [Domingo, Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado, Segunda a sexta, Segunda a sábado, Todos os dias]
+          - { name: hora, label: Horário, widget: string, hint: 'Ex.: 19h30' }
+          - { name: observacao, label: Observação, widget: string, required: false, hint: 'Ex.: Celebração da Palavra' }
+      - name: outros_horarios
+        label: Adoração e outras devoções
+        label_singular: horário
+        widget: list
+        required: false
+        summary: '{{dia}} · {{hora}}'
+        fields:
+          - name: dia
+            label: Dia
+            widget: select
+            options: [Domingo, Segunda-feira, Terça-feira, Quarta-feira, Quinta-feira, Sexta-feira, Sábado, Segunda a sexta, Segunda a sábado, Todos os dias]
+          - { name: hora, label: Horário, widget: string, hint: 'Ex.: 19h30' }
+          - { name: observacao, label: Observação, widget: string, required: false, hint: 'Ex.: Celebração da Palavra' }
+
+  # ---------------------------------------------------------------- Pastorais
+  - name: pastorais
+    label: Pastorais e movimentos
+    label_singular: Pastoral
+    folder: src/content/pastorais
+    create: true
+    slug: '{{slug}}'
+    identifier_field: nome
+    sortable_fields: { fields: [nome], default: { field: nome, direction: ascending } }
+    fields:
+      - { name: nome, label: Nome, widget: string }
+      - { name: resumo, label: Resumo, widget: text, required: false }
+      - { name: encontros, label: Dia e horário dos encontros, widget: string, required: false }
+      - { name: contato, label: Contato / coordenação, widget: string, required: false }
+      - { name: imagem, label: Imagem, widget: image, required: false }
+      - { name: body, label: Texto, widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- Galeria
+  - name: galeria
+    label: Galeria de fotos
+    label_singular: Álbum
+    folder: src/content/galeria
+    create: true
+    slug: '{{data}}-{{slug}}'
+    identifier_field: titulo
+    summary: '{{data | date("DD/MM/YYYY")}} · {{titulo}}'
+    media_folder: /public/uploads/galeria/{{slug}}
+    public_folder: /uploads/galeria/{{slug}}
+    sortable_fields: { fields: [data, titulo], default: { field: data, direction: descending } }
+    fields:
+      - { name: titulo, label: Título do álbum, widget: string }
+      - { name: data, label: Data, widget: datetime, type: date, default: '{{now}}' }
+      - name: comunidade
+        label: Comunidade
+        widget: relation
+        collection: comunidades
+        value_field: '{{slug}}'
+        search_fields: [nome, bairro]
+        display_fields: ['{{bairro}} – {{nome}}']
+        required: false
+      - { name: capa, label: Foto de capa, widget: image, required: false }
+      - name: fotos
+        label: Fotos
+        label_singular: foto
+        widget: list
+        fields:
+          - { name: imagem, label: Foto, widget: image }
+          - { name: legenda, label: Legenda, widget: string, required: false }
+      - { name: body, label: Texto (opcional), widget: markdown, required: false }
+
+  # ---------------------------------------------------------------- Páginas
+  - name: paginas
+    label: Páginas (sacramentos e informações)
+    label_singular: Página
+    folder: src/content/paginas
+    create: true
+    slug: '{{slug}}'
+    identifier_field: titulo
+    sortable_fields: { fields: [ordem, titulo], default: { field: ordem, direction: ascending } }
+    fields:
+      - { name: titulo, label: Título, widget: string }
+      - { name: resumo, label: Resumo, widget: text, required: false }
+      - name: grupo
+        label: Seção
+        widget: select
+        default: paroquia
+        options:
+          - { label: Sacramentos, value: sacramentos }
+          - { label: Vida paroquial, value: paroquia }
+      - { name: ordem, label: Ordem, widget: number, value_type: int, default: 10 }
+      - { name: imagem, label: Imagem, widget: image, required: false }
+      - { name: body, label: Texto, widget: markdown }
+
+  # ---------------------------------------------------------------- Configurações
+  - name: configuracoes
+    label: Configurações do site
+    files:
+      - name: paroquia
+        label: Dados da paróquia
+        file: src/data/paroquia.json
+        format: json
+        fields:
+          - { name: nome, label: Nome da paróquia, widget: string }
+          - { name: nome_curto, label: Nome curto (topo do site), widget: string }
+          - { name: site_principal, label: Endereço do site principal, widget: string }
+          - { name: local, label: Cidade / bairro, widget: string }
+          - { name: arquidiocese, label: Arquidiocese, widget: string }
+          - { name: lema, label: Frase de apresentação, widget: text }
+          - { name: logo, label: Logotipo, widget: image, required: false }
+          - { name: imagem_capa, label: Foto de capa da página inicial, widget: image, required: false }
+          - name: aviso
+            label: Faixa de aviso no topo do site
+            widget: object
+            fields:
+              - { name: ativo, label: Mostrar aviso, widget: boolean, default: false }
+              - { name: texto, label: Texto do aviso, widget: string, required: false }
+              - { name: link, label: Link (opcional), widget: string, required: false }
+          - { name: endereco, label: Endereço da secretaria, widget: string }
+          - { name: telefone, label: Telefone, widget: string }
+          - { name: whatsapp, label: "WhatsApp (só números, com 55 e DDD)", widget: string, required: false, hint: 'Ex.: 554832421544' }
+          - { name: email, label: E-mail, widget: string }
+          - { name: secretaria_horario, label: Horário da secretaria, widget: string }
+          - { name: mapa_url, label: Link "Como chegar" (Google Maps), widget: string, required: false }
+          - { name: mapa_embed, label: Endereço do mapa incorporado, widget: string, required: false }
+          - name: redes
+            label: Redes sociais
+            widget: object
+            fields:
+              - { name: facebook, label: Facebook, widget: string, required: false }
+              - { name: instagram, label: Instagram, widget: string, required: false }
+              - { name: youtube, label: YouTube, widget: string, required: false }
+              - { name: jornal, label: Jornal (Flipsnack), widget: string, required: false }
+          - name: links_uteis
+            label: Links úteis (rodapé)
+            widget: list
+            fields:
+              - { name: nome, label: Nome, widget: string }
+              - { name: url, label: Endereço, widget: string }

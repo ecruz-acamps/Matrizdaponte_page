@@ -1,0 +1,27 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { diaMes } from '../lib/data';
+interface Props { eventos: CollectionEntry<'eventos'>[]; limite?: number }
+const { eventos, limite } = Astro.props;
+const iso = (d: Date) => d.toISOString().slice(0, 10);
+---
+<div class="grid" data-lista-eventos>
+  {eventos.slice(0, limite ?? eventos.length).map((ev) => {
+    const e = ev.data;
+    const { dia, mes } = diaMes(e.inicio);
+    return (
+      <article class="evento" data-fim={iso(e.fim ?? e.inicio)}>
+        <div class="data-bloco"><b>{dia}</b><span>{mes}</span></div>
+        <div>
+          <h3>{e.titulo}</h3>
+          <div class="meta">
+            {e.horario && <span>{e.horario}</span>}
+            {e.local && <span>{e.local}</span>}
+          </div>
+          {ev.body && <p style="margin:6px 0 0" class="muted">{ev.body.trim().slice(0, 220)}</p>}
+        </div>
+      </article>
+    );
+  })}
+  <div class="vazio" data-vazio hidden={eventos.length > 0}>Nenhum evento agendado no momento.</div>
+</div>

@@ -1,0 +1,19 @@
+# Endereços do site antigo (WordPress) levados para as páginas novas
+/a-paroquia/horarios-de-missas/*   /horarios/            301
+/a-paroquia/confissoes/*           /confissoes/          301
+/a-paroquia/secretaria/*           /contato/             301
+/a-paroquia/catequese/*            /catequese/           301
+/a-paroquia/batismo/*              /batismo/             301
+/a-paroquia/matrimonio/*           /matrimonio/          301
+/a-paroquia/dizimo/*               /dizimo/              301
+/a-paroquia/acao-social/*          /pastorais/#acao-social 301
+/a-paroquia/palavra-dos-padres/*   /palavra-do-paroco/   301
+/a-paroquia/palavra-do-bispo/*     /sacramentos/         301
+/a-paroquia/*                      /sacramentos/         301
+/pastorais/*                       /pastorais/           301
+/agenda-eventos/*                  /eventos/             301
+/galeria-fotografica/*             /galeria/             301
+/formacao/*                        /noticias/            301
+/painel                            /admin/               301
+/painel/*                          /admin/               301
+/wp-admin/*                        /admin/               301

@@ -1,0 +1,153 @@
+---
+import '../styles/global.css';
+import Icone from '../components/Icone.astro';
+import Logo from '../components/Logo.astro';
+import { paroquia, getComunidades } from '../lib/data';
+
+interface Props {
+  titulo?: string;
+  descricao?: string;
+  imagem?: string | null;
+  /** id da comunidade quando a página pertence ao site de uma comunidade */
+  comunidade?: string;
+}
+const { titulo, descricao, imagem, comunidade } = Astro.props;
+const comunidades = await getComunidades();
+const com = comunidade ? comunidades.find((c) => c.id === comunidade) : undefined;
+
+const nomeSite = com ? `${com.data.nome} · ${com.data.bairro}` : paroquia.nome;
+const tituloCompleto = titulo ? `${titulo} | ${com ? com.data.bairro : paroquia.nome_curto}` : `${nomeSite} | ${paroquia.local}`;
+const desc = descricao ?? paroquia.lema;
+const caminho = Astro.url.pathname;
+const inicio = com ? `/c/${com.id}/` : '/';
+
+const menu = com
+  ? [
+      { href: inicio, texto: 'Início' },
+      { href: `${inicio}#horarios`, texto: 'Horários' },
+      { href: `${inicio}#noticias`, texto: 'Notícias' },
+      { href: `${inicio}#eventos`, texto: 'Agenda' },
+      { href: `${paroquia.site_principal ?? 'https://www.paroquiaponte.com.br'}/`, texto: 'Paróquia' },
+    ]
+  : [
+      { href: '/horarios/', texto: 'Horários' },
+      { href: '/comunidades/', texto: 'Comunidades' },
+      { href: '/noticias/', texto: 'Notícias' },
+      { href: '/eventos/', texto: 'Agenda' },
+      { href: '/pastorais/', texto: 'Pastorais' },
+      { href: '/sacramentos/', texto: 'Sacramentos' },
+      { href: '/contato/', texto: 'Contato' },
+    ];
+const ativo = (href: string) => href !== '/' && !href.includes('#') && caminho.startsWith(href);
+const canonical = new URL(caminho, Astro.site);
+---
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{tituloCompleto}</title>
+    <meta name="description" content={desc} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={tituloCompleto} />
+    <meta property="og:description" content={desc} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="pt_BR" />
+    {imagem && <meta property="og:image" content={new URL(imagem, Astro.site)} />}
+    <meta name="theme-color" content="#1d3557" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    {paroquia.aviso?.ativo && paroquia.aviso.texto && (
+      <div class="aviso">
+        {paroquia.aviso.texto} {paroquia.aviso.link && <a href={paroquia.aviso.link}>Saiba mais</a>}
+      </div>
+    )}
+    <header class="topo">
+      <div class="container">
+        <a class="marca" href={inicio}>
+          <Logo />
+          <div>
+            <strong>{com ? com.data.nome : paroquia.nome_curto}</strong>
+            <span>{com ? `${com.data.bairro} · ${paroquia.nome_curto}` : paroquia.local}</span>
+          </div>
+        </a>
+        <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
+        <nav class="menu" id="menu" aria-label="Principal">
+          {menu.map((m) => <a href={m.href} aria-current={ativo(m.href) ? 'page' : undefined}>{m.texto}</a>)}
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="rodape">
+      <div class="container">
+        <div class="rodape-grid">
+          <div>
+            <h4>{paroquia.nome}</h4>
+            <p>{paroquia.arquidiocese}</p>
+            <p>{paroquia.endereco}</p>
+            <div class="redes">
+              {paroquia.redes.facebook && <a href={paroquia.redes.facebook} aria-label="Facebook" rel="noopener" target="_blank"><Icone nome="facebook" /></a>}
+              {paroquia.redes.instagram && <a href={paroquia.redes.instagram} aria-label="Instagram" rel="noopener" target="_blank"><Icone nome="instagram" /></a>}
+              {paroquia.redes.youtube && <a href={paroquia.redes.youtube} aria-label="YouTube" rel="noopener" target="_blank"><Icone nome="youtube" /></a>}
+              {paroquia.redes.jornal && <a href={paroquia.redes.jornal} aria-label="Jornal da paróquia" rel="noopener" target="_blank"><Icone nome="jornal" /></a>}
+            </div>
+          </div>
+          <div>
+            <h4>Secretaria</h4>
+            <ul>
+              <li>{paroquia.secretaria_horario}</li>
+              <li><a href={`tel:+55${paroquia.telefone.replace(/\D/g, '')}`}>{paroquia.telefone}</a></li>
+              {paroquia.whatsapp && <li><a href={`https://wa.me/${paroquia.whatsapp}`} rel="noopener" target="_blank">WhatsApp</a></li>}
+              <li><a href={`mailto:${paroquia.email}`}>{paroquia.email}</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Comunidades</h4>
+            <ul>
+              {comunidades.map((c) => <li><a href={`/c/${c.id}/`}>{c.data.bairro}</a></li>)}
+            </ul>
+          </div>
+          <div>
+            <h4>Links úteis</h4>
+            <ul>
+              {paroquia.links_uteis.map((l) => <li><a href={l.url} rel="noopener" target="_blank">{l.nome}</a></li>)}
+            </ul>
+          </div>
+        </div>
+        <div class="rodape-base">
+          <span>© {new Date().getFullYear()} {paroquia.nome}</span>
+          <a href="/admin/">Área do administrador</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      const btn = document.querySelector('.menu-btn');
+      const menu = document.getElementById('menu');
+      btn?.addEventListener('click', () => {
+        const aberto = menu?.classList.toggle('aberto');
+        btn.setAttribute('aria-expanded', String(!!aberto));
+      });
+      // Esconde eventos que já passaram (o site é estático, então isso é feito no navegador).
+      const hoje = new Date();
+      hoje.setHours(0, 0, 0, 0);
+      document.querySelectorAll<HTMLElement>('[data-fim]').forEach((el) => {
+        const fim = new Date(el.dataset.fim + 'T23:59:59');
+        if (fim < hoje) el.classList.add('passado');
+      });
+      document.querySelectorAll<HTMLElement>('[data-lista-eventos]').forEach((lista) => {
+        const visiveis = lista.querySelectorAll('[data-fim]:not(.passado)').length;
+        const vazio = lista.querySelector<HTMLElement>('[data-vazio]');
+        if (vazio) vazio.hidden = visiveis > 0;
+      });
+    </script>
+  </body>
+</html>

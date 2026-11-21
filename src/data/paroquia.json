@@ -1,0 +1,34 @@
+{
+  "nome": "Paróquia São Judas Tadeu e São João Batista",
+  "nome_curto": "Paróquia da Ponte",
+  "site_principal": "https://www.paroquiaponte.com.br",
+  "local": "Ponte do Imaruim · Palhoça – SC",
+  "arquidiocese": "Arquidiocese de Florianópolis",
+  "lema": "Evangelizar a partir da Palavra de Deus e da Eucaristia, com opção preferencial pelos pobres, para que todos tenham vida (Jo 10,10).",
+  "logo": "",
+  "imagem_capa": "",
+  "aviso": {
+    "ativo": false,
+    "texto": "",
+    "link": ""
+  },
+  "endereco": "Rua João Febrônio de Oliveira, 65 – Ponte do Imaruim – Palhoça – SC – CEP 88130-385",
+  "telefone": "(48) 3242-1544",
+  "whatsapp": "554832421544",
+  "email": "paroquiaponte@yahoo.com.br",
+  "secretaria_horario": "Terça a sexta-feira, das 9h às 11h30 e das 13h30 às 18h",
+  "mapa_url": "https://www.google.com/maps/search/?api=1&query=Par%C3%B3quia+S%C3%A3o+Judas+Tadeu+e+S%C3%A3o+Jo%C3%A3o+Batista+Palho%C3%A7a",
+  "mapa_embed": "https://maps.google.com/maps?q=Rua%20Jo%C3%A3o%20Febr%C3%B4nio%20de%20Oliveira%2C%2065%2C%20Palho%C3%A7a%20SC&output=embed",
+  "redes": {
+    "facebook": "https://www.facebook.com/paroquiaponte",
+    "instagram": "",
+    "youtube": "https://www.youtube.com/channel/UCaDI7L5B5CwHL4VamEDg_eA",
+    "jornal": "https://www.flipsnack.com/paroquiaponte/"
+  },
+  "links_uteis": [
+    { "nome": "Liturgia diária", "url": "https://liturgia.cancaonova.com/" },
+    { "nome": "Santa Sé", "url": "https://www.vatican.va/content/vatican/pt.html" },
+    { "nome": "Arquidiocese de Florianópolis", "url": "https://www.arquifloripa.org.br/" },
+    { "nome": "Aleteia", "url": "https://pt.aleteia.org/" }
+  ]
+}

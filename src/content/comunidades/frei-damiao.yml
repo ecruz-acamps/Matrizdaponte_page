@@ -1,0 +1,13 @@
+nome: São José
+bairro: Frei Damião
+subdominio:
+ordem: 4
+padroeiros:
+  - São José, esposo de Maria
+endereco:
+foto:
+descricao:
+missas:
+  - { dia: Domingo, hora: 08h }
+confissoes: []
+outros_horarios: []

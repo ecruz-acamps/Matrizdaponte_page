@@ -1,0 +1,16 @@
+nome: Nossa Senhora Aparecida
+bairro: Jardim Eldorado
+subdominio:
+ordem: 2
+padroeiros:
+  - Nossa Senhora Aparecida
+endereco:
+foto:
+descricao:
+missas:
+  - { dia: Quarta-feira, hora: 20h, observacao: Celebração da Palavra }
+  - { dia: Sábado, hora: 19h30 }
+  - { dia: Domingo, hora: 18h }
+confissoes:
+  - { dia: Domingo, hora: 18h às 19h, observacao: Nos domingos de dia par }
+outros_horarios: []

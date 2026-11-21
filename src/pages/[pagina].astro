@@ -1,0 +1,45 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import PaginaTopo from '../components/PaginaTopo.astro';
+import HorarioCard from '../components/HorarioCard.astro';
+import { getComunidades } from '../lib/data';
+
+export async function getStaticPaths() {
+  // Nomes reservados para páginas que já existem no site.
+  const reservados = ['horarios', 'noticias', 'eventos', 'comunidades', 'pastorais', 'galeria', 'contato', 'sacramentos', 'admin', 'c', 'uploads'];
+  const paginas = await getCollection('paginas');
+  return paginas.filter((p) => !reservados.includes(p.id)).map((p) => ({ params: { pagina: p.id }, props: { pagina: p } }));
+}
+const { pagina } = Astro.props;
+const { Content } = await render(pagina);
+const comunidades = await getComunidades();
+---
+<Base titulo={pagina.data.titulo} descricao={pagina.data.resumo ?? undefined} imagem={pagina.data.imagem}>
+  <PaginaTopo titulo={pagina.data.titulo} subtitulo={pagina.data.resumo} migalhas={[{ href: '/sacramentos/', texto: 'Sacramentos e serviços' }]} />
+  <section class="section">
+    <div class="container">
+      <article class="prosa">
+        {pagina.data.imagem && <img src={pagina.data.imagem} alt="" />}
+        <Content />
+      </article>
+
+      {pagina.id === 'confissoes' && (
+        <div class="horarios-grid" style="margin-top:24px">
+          {comunidades.filter((c) => c.data.confissoes.length).map((c) => <HorarioCard comunidade={c} tipo="confissoes" />)}
+        </div>
+      )}
+
+      {pagina.id === 'padroeiros' && (
+        <div class="tabela-wrap" style="margin-top:24px">
+          <table class="tabela">
+            <thead><tr><th>Comunidade</th><th>Padroeiros</th></tr></thead>
+            <tbody>
+              {comunidades.map((c) => <tr><td><a href={`/c/${c.id}/`}>{c.data.bairro}</a></td><td>{c.data.padroeiros.join(', ')}</td></tr>)}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,22 @@
+nome: Matriz São Judas Tadeu e São João Batista
+bairro: Ponte do Imaruim
+subdominio:
+ordem: 1
+padroeiros:
+  - São Judas Tadeu
+  - São João Batista
+endereco: Rua João Febrônio de Oliveira, 65 – Ponte do Imaruim, Palhoça – SC
+foto:
+descricao: Igreja Matriz da paróquia, sede da secretaria paroquial e do Centro Catequético.
+missas:
+  - { dia: Segunda a sexta, hora: 19h }
+  - { dia: Sábado, hora: 17h }
+  - { dia: Domingo, hora: 07h }
+  - { dia: Domingo, hora: 19h30 }
+confissoes:
+  - { dia: Quarta-feira, hora: 15h às 17h e 18h às 18h45 }
+  - { dia: Quinta-feira, hora: 09h às 11h e 18h às 18h45 }
+  - { dia: Sexta-feira, hora: 18h às 18h45 }
+  - { dia: Domingo, hora: 19h30 às 20h30, observacao: Nos domingos de dia ímpar }
+outros_horarios:
+  - { dia: Quarta-feira, hora: 15h às 18h30, observacao: Adoração ao Santíssimo Sacramento }

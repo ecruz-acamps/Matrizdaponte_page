@@ -1,0 +1,77 @@
+---
+import Base from '../../../layouts/Base.astro';
+import HorarioCard from '../../../components/HorarioCard.astro';
+import NoticiaCard from '../../../components/NoticiaCard.astro';
+import ListaEventos from '../../../components/ListaEventos.astro';
+import MissasHoje from '../../../components/MissasHoje.astro';
+import { getComunidades, getNoticias, getEventos, getGaleria, paroquia, formatarData } from '../../../lib/data';
+
+export async function getStaticPaths() {
+  const comunidades = await getComunidades();
+  return comunidades.map((c) => ({ params: { id: c.id }, props: { comunidade: c } }));
+}
+const { comunidade } = Astro.props;
+const c = comunidade.data;
+const noticias = (await getNoticias(comunidade.id)).slice(0, 6);
+const eventos = await getEventos(comunidade.id);
+const albuns = (await getGaleria(comunidade.id)).filter((g) => g.data.comunidade === comunidade.id).slice(0, 3);
+---
+<Base titulo={c.nome} descricao={c.descricao ?? `Comunidade ${c.nome}, ${c.bairro}. ${paroquia.nome}.`} imagem={c.foto} comunidade={comunidade.id}>
+  <section class:list={['hero', { 'com-imagem': !!c.foto }]} style={c.foto ? `background-image:url('${c.foto}')` : undefined}>
+    <div class="container">
+      <div class="eyebrow">Comunidade · {c.bairro}</div>
+      <h1>{c.nome}</h1>
+      {c.descricao && <p class="lema">{c.descricao}</p>}
+      {c.padroeiros.length > 0 && <p class="lema">Padroeiros: {c.padroeiros.join(', ')}</p>}
+      {c.endereco && <p class="lema">{c.endereco}</p>}
+      <div class="acoes">
+        <a class="btn btn-primario" href="#horarios">Horários</a>
+        <a class="btn btn-claro" href={`${paroquia.site_principal}/`}>Site da paróquia</a>
+      </div>
+    </div>
+  </section>
+  <MissasHoje comunidades={[comunidade]} mostrarBairro={false} />
+
+  <section class="section" id="horarios">
+    <div class="container">
+      <div class="section-head"><h2>Horários</h2></div>
+      <div class="horarios-grid">
+        <HorarioCard comunidade={comunidade} link={false} />
+        {c.confissoes.length > 0 && <HorarioCard comunidade={comunidade} tipo="confissoes" link={false} titulo="Confissões" />}
+        {c.outros_horarios.length > 0 && <HorarioCard comunidade={comunidade} tipo="outros_horarios" link={false} titulo="Adoração e devoções" />}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt" id="noticias">
+    <div class="container">
+      <div class="section-head"><h2>Notícias e avisos</h2><a class="link-seta" href={`${paroquia.site_principal}/noticias/`}>Todas as notícias</a></div>
+      {noticias.length ? (
+        <div class="grid grid-3">{noticias.map((n) => <NoticiaCard noticia={n} rotulo={n.data.comunidade === 'paroquia' ? 'Paróquia' : undefined} />)}</div>
+      ) : <div class="vazio">Nenhuma notícia publicada ainda.</div>}
+    </div>
+  </section>
+
+  <section class="section" id="eventos">
+    <div class="container">
+      <div class="section-head"><h2>Agenda</h2></div>
+      <ListaEventos eventos={eventos} />
+    </div>
+  </section>
+
+  {albuns.length > 0 && (
+    <section class="section section-alt">
+      <div class="container">
+        <div class="section-head"><h2>Fotos</h2><a class="link-seta" href="/galeria/">Galeria</a></div>
+        <div class="grid grid-3">
+          {albuns.map((g) => (
+            <a class="card" href={`/galeria/${g.id}/`}>
+              <div class="card-img">{(g.data.capa || g.data.fotos[0]?.imagem) && <img src={g.data.capa || g.data.fotos[0]?.imagem} alt="" loading="lazy" />}</div>
+              <div class="card-body"><div class="meta">{formatarData(g.data.data)}</div><h3>{g.data.titulo}</h3></div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>

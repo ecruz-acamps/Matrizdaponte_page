@@ -1,0 +1,14 @@
+---
+interface Props { titulo: string; subtitulo?: string | null; eyebrow?: string; migalhas?: { href: string; texto: string }[] }
+const { titulo, subtitulo, eyebrow, migalhas = [] } = Astro.props;
+---
+<section class="pagina-topo">
+  <div class="container">
+    {migalhas.length > 0 && (
+      <div class="migalhas">{migalhas.map((m, i) => <>{i > 0 && ' / '}<a href={m.href}>{m.texto}</a></>)}</div>
+    )}
+    {eyebrow && <div class="eyebrow">{eyebrow}</div>}
+    <h1>{titulo}</h1>
+    {subtitulo && <p>{subtitulo}</p>}
+  </div>
+</section>

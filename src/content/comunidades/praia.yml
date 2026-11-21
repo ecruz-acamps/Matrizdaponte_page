@@ -1,0 +1,14 @@
+nome: Nossa Senhora da Praia
+bairro: Praia
+subdominio:
+ordem: 6
+padroeiros:
+  - Nossa Senhora da Praia
+  - São João Paulo II
+endereco:
+foto:
+descricao:
+missas:
+  - { dia: Domingo, hora: 08h30 }
+confissoes: []
+outros_horarios: []

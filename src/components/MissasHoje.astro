@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { diasDaSemana } from '../lib/data';
+interface Props { comunidades: CollectionEntry<'comunidades'>[]; mostrarBairro?: boolean }
+const { comunidades, mostrarBairro = true } = Astro.props;
+const itens = comunidades
+  .flatMap((c) => c.data.missas.map((m) => ({ ...m, bairro: c.data.bairro, dias: diasDaSemana(m.dia).join(',') })))
+  .sort((a, b) => a.hora.localeCompare(b.hora));
+---
+<section class="hoje">
+  <div class="container">
+    <div class="hoje-card" data-missas-hoje>
+      <h2>Missas <span data-hoje-rotulo>hoje</span></h2>
+      <div class="hoje-lista">
+        {itens.map((m) => (
+          <span class="chip" data-dias={m.dias} hidden>
+            <b>{m.hora}</b>{mostrarBairro && <span>{m.bairro}</span>}{m.observacao && <span>· {m.observacao}</span>}
+          </span>
+        ))}
+        <span class="muted" data-sem-missa hidden>Sem missas hoje. <a href="/horarios/">Ver todos os horários</a></span>
+      </div>
+    </div>
+  </div>
+</section>
+<script>
+  document.querySelectorAll<HTMLElement>('[data-missas-hoje]').forEach((card) => {
+    const nomes = ['domingo', 'segunda-feira', 'terça-feira', 'quarta-feira', 'quinta-feira', 'sexta-feira', 'sábado'];
+    const hoje = new Date().getDay();
+    let n = 0;
+    card.querySelectorAll<HTMLElement>('[data-dias]').forEach((el) => {
+      const mostra = (el.dataset.dias ?? '').split(',').includes(String(hoje));
+      el.hidden = !mostra;
+      if (mostra) n++;
+    });
+    const rot = card.querySelector('[data-hoje-rotulo]');
+    if (rot) rot.textContent = `hoje, ${nomes[hoje]}`;
+    const vazio = card.querySelector<HTMLElement>('[data-sem-missa]');
+    if (vazio) vazio.hidden = n > 0;
+  });
+</script>

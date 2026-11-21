@@ -1,0 +1,24 @@
+---
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import PaginaTopo from '../../components/PaginaTopo.astro';
+import { getGaleria, formatarData } from '../../lib/data';
+export async function getStaticPaths() {
+  return (await getGaleria()).map((g) => ({ params: { id: g.id }, props: { album: g } }));
+}
+const { album } = Astro.props;
+const { Content } = await render(album);
+---
+<Base titulo={album.data.titulo} imagem={album.data.capa || album.data.fotos[0]?.imagem}>
+  <PaginaTopo eyebrow={formatarData(album.data.data)} titulo={album.data.titulo} migalhas={[{ href: '/galeria/', texto: 'Galeria' }]} />
+  <section class="section">
+    <div class="container">
+      <div class="prosa"><Content /></div>
+      <div class="fotos">
+        {album.data.fotos.map((f) => (
+          <figure><a href={f.imagem} target="_blank"><img src={f.imagem} alt={f.legenda ?? ''} loading="lazy" /></a>{f.legenda && <figcaption>{f.legenda}</figcaption>}</figure>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>

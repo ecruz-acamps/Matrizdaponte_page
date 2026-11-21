@@ -1,0 +1,24 @@
+---
+import Base from '../layouts/Base.astro';
+import PaginaTopo from '../components/PaginaTopo.astro';
+import Icone from '../components/Icone.astro';
+import { paroquia } from '../lib/data';
+const tel = paroquia.telefone.replace(/\D/g, '');
+---
+<Base titulo="Contato" descricao={`Fale com a secretaria paroquial: ${paroquia.telefone}.`}>
+  <PaginaTopo eyebrow="Secretaria paroquial" titulo="Contato" subtitulo={paroquia.secretaria_horario} />
+  <section class="section">
+    <div class="container contato-grid">
+      <div>
+        <ul class="info-lista">
+          <li><Icone nome="local" /><span><strong>Endereço</strong><br />{paroquia.endereco}<br /><a href={paroquia.mapa_url} target="_blank" rel="noopener">Como chegar</a></span></li>
+          <li><Icone nome="telefone" /><span><strong>Telefone</strong><br /><a href={`tel:+55${tel}`}>{paroquia.telefone}</a></span></li>
+          {paroquia.whatsapp && <li><Icone nome="whatsapp" /><span><strong>WhatsApp</strong><br /><a href={`https://wa.me/${paroquia.whatsapp}`} target="_blank" rel="noopener">Enviar mensagem</a></span></li>}
+          <li><Icone nome="email" /><span><strong>E-mail</strong><br /><a href={`mailto:${paroquia.email}`}>{paroquia.email}</a></span></li>
+          <li><Icone nome="relogio" /><span><strong>Atendimento</strong><br />{paroquia.secretaria_horario}</span></li>
+        </ul>
+      </div>
+      <iframe class="mapa" src={paroquia.mapa_embed} loading="lazy" title="Mapa da Igreja Matriz" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+</Base>

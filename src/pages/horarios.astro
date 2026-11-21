@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+import PaginaTopo from '../components/PaginaTopo.astro';
+import HorarioCard from '../components/HorarioCard.astro';
+import { getComunidades } from '../lib/data';
+const comunidades = await getComunidades();
+const comOutros = comunidades.filter((c) => c.data.outros_horarios.length);
+const comConf = comunidades.filter((c) => c.data.confissoes.length);
+---
+<Base titulo="Horários de missas" descricao="Horários de missas, confissões e adoração em todas as comunidades da paróquia.">
+  <PaginaTopo eyebrow="Celebrações" titulo="Horários de missas" subtitulo="Confira os horários de cada comunidade. Em feriados e datas festivas os horários podem mudar: fique atento aos avisos." />
+  <section class="section">
+    <div class="container">
+      <div class="horarios-grid">{comunidades.map((c) => <HorarioCard comunidade={c} />)}</div>
+    </div>
+  </section>
+  {comConf.length > 0 && (
+    <section class="section section-alt" id="confissoes">
+      <div class="container">
+        <div class="section-head"><h2>Confissões</h2></div>
+        <div class="horarios-grid">{comConf.map((c) => <HorarioCard comunidade={c} tipo="confissoes" />)}</div>
+      </div>
+    </section>
+  )}
+  {comOutros.length > 0 && (
+    <section class="section">
+      <div class="container">
+        <div class="section-head"><h2>Adoração e devoções</h2></div>
+        <div class="horarios-grid">{comOutros.map((c) => <HorarioCard comunidade={c} tipo="outros_horarios" />)}</div>
+      </div>
+    </section>
+  )}
+</Base>
