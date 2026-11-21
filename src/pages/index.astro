@@ -29,6 +29,11 @@ const destaques = [
 ---
 <Base imagem={paroquia.imagem_capa || null}>
   <section class:list={['hero', 'classico', { 'com-imagem': !!paroquia.imagem_capa }]} style={paroquia.imagem_capa ? `background-image:url('${paroquia.imagem_capa}')` : undefined}>
+    {!paroquia.imagem_capa && (paroquia.padroeiros ?? []).length > 0 && (
+      <div class="hero-santos" aria-hidden="true">
+        {paroquia.padroeiros.slice(0, 2).map((p, i) => p.imagem && <img class={i === 0 ? 'esq' : 'dir'} src={p.imagem} alt="" />)}
+      </div>
+    )}
     <div class="container">
       <div class="eyebrow">{paroquia.local}</div>
       <h1>{paroquia.nome}</h1>
