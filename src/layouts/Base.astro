@@ -21,24 +21,46 @@ const desc = descricao ?? paroquia.lema;
 const caminho = Astro.url.pathname;
 const inicio = com ? `/c/${com.id}/` : '/';
 
-const menu = com
+type Item = { href: string; texto: string };
+type Menu = Item | { texto: string; itens: Item[] };
+const menu: Menu[] = com
   ? [
       { href: inicio, texto: 'Início' },
       { href: `${inicio}#horarios`, texto: 'Horários' },
       { href: `${inicio}#noticias`, texto: 'Notícias' },
       { href: `${inicio}#eventos`, texto: 'Agenda' },
-      { href: `${paroquia.site_principal ?? 'https://www.paroquiaponte.com.br'}/`, texto: 'Paróquia' },
+      { href: `${paroquia.site_principal}/`, texto: 'Paróquia' },
     ]
   : [
-      { href: '/horarios/', texto: 'Horários' },
-      { href: '/comunidades/', texto: 'Comunidades' },
-      { href: '/noticias/', texto: 'Notícias' },
-      { href: '/eventos/', texto: 'Agenda' },
-      { href: '/pastorais/', texto: 'Pastorais' },
-      { href: '/sacramentos/', texto: 'Sacramentos' },
+      { href: '/', texto: 'Início' },
+      { texto: 'Institucional', itens: [
+        { href: '/palavra-do-paroco/', texto: 'Palavra do Pároco' },
+        { href: '/padroeiros/', texto: 'Padroeiros' },
+        { href: '/comunidades/', texto: 'Comunidades' },
+        { href: '/contato/', texto: 'Secretaria paroquial' },
+      ] },
+      { texto: 'Horários', itens: [
+        { href: '/horarios/', texto: 'Horários de missas' },
+        { href: '/confissoes/', texto: 'Confissões' },
+        { href: '/horarios/#adoracao', texto: 'Adoração e devoções' },
+      ] },
+      { texto: 'Sacramentos', itens: [
+        { href: '/batismo/', texto: 'Batismo' },
+        { href: '/catequese/', texto: 'Catequese' },
+        { href: '/confissoes/', texto: 'Confissão' },
+        { href: '/matrimonio/', texto: 'Matrimônio' },
+        { href: '/sacramentos/', texto: 'Todos os serviços' },
+      ] },
+      { texto: 'Atividades', itens: [
+        { href: '/pastorais/', texto: 'Pastorais e movimentos' },
+        { href: '/eventos/', texto: 'Agenda' },
+        { href: '/noticias/', texto: 'Notícias' },
+        { href: '/galeria/', texto: 'Galeria de fotos' },
+      ] },
+      { href: '/dizimo/', texto: 'Dízimo' },
       { href: '/contato/', texto: 'Contato' },
     ];
-const ativo = (href: string) => href !== '/' && !href.includes('#') && caminho.startsWith(href);
+const ativo = (href: string) => (href === '/' ? caminho === '/' : !href.includes('#') && caminho.startsWith(href));
 const canonical = new URL(caminho, Astro.site);
 ---
 <!doctype html>
@@ -66,6 +88,20 @@ const canonical = new URL(caminho, Astro.site);
         {paroquia.aviso.texto} {paroquia.aviso.link && <a href={paroquia.aviso.link}>Saiba mais</a>}
       </div>
     )}
+    <div class="barra-topo">
+      <div class="container">
+        <div class="contatos">
+          <a href={`tel:+55${paroquia.telefone.replace(/\D/g, '')}`}><Icone nome="telefone" tamanho={14} />{paroquia.telefone}</a>
+          {paroquia.whatsapp && <a href={`https://wa.me/${paroquia.whatsapp}`} target="_blank" rel="noopener" class="so-desktop"><Icone nome="whatsapp" tamanho={14} />WhatsApp</a>}
+          <a href={`mailto:${paroquia.email}`} class="so-desktop"><Icone nome="email" tamanho={14} />{paroquia.email}</a>
+        </div>
+        <div class="redes-mini">
+          {paroquia.redes.facebook && <a href={paroquia.redes.facebook} aria-label="Facebook" rel="noopener" target="_blank"><Icone nome="facebook" tamanho={16} /></a>}
+          {paroquia.redes.instagram && <a href={paroquia.redes.instagram} aria-label="Instagram" rel="noopener" target="_blank"><Icone nome="instagram" tamanho={16} /></a>}
+          {paroquia.redes.youtube && <a href={paroquia.redes.youtube} aria-label="YouTube" rel="noopener" target="_blank"><Icone nome="youtube" tamanho={16} /></a>}
+        </div>
+      </div>
+    </div>
     <header class="topo">
       <div class="container">
         <a class="marca" href={inicio}>
@@ -76,8 +112,17 @@ const canonical = new URL(caminho, Astro.site);
           </div>
         </a>
         <button class="menu-btn" aria-expanded="false" aria-controls="menu">Menu</button>
-        <nav class="menu" id="menu" aria-label="Principal">
-          {menu.map((m) => <a href={m.href} aria-current={ativo(m.href) ? 'page' : undefined}>{m.texto}</a>)}
+        <nav aria-label="Principal">
+          <ul class="menu" id="menu">
+            {menu.map((m) => 'itens' in m ? (
+              <li>
+                <button type="button" aria-haspopup="true">{m.texto}</button>
+                <ul class="submenu">{m.itens.map((i) => <li><a href={i.href}>{i.texto}</a></li>)}</ul>
+              </li>
+            ) : (
+              <li><a href={m.href} aria-current={ativo(m.href) ? 'page' : undefined}>{m.texto}</a></li>
+            ))}
+          </ul>
         </nav>
       </div>
     </header>
@@ -116,6 +161,16 @@ const canonical = new URL(caminho, Astro.site);
             </ul>
           </div>
           <div>
+            <h4>Institucional</h4>
+            <ul>
+              <li><a href="/horarios/">Horários de missas</a></li>
+              <li><a href="/sacramentos/">Sacramentos</a></li>
+              <li><a href="/pastorais/">Pastorais</a></li>
+              <li><a href="/dizimo/">Dízimo</a></li>
+              <li><a href="/noticias/">Notícias</a></li>
+            </ul>
+          </div>
+          <div>
             <h4>Links úteis</h4>
             <ul>
               {paroquia.links_uteis.map((l) => <li><a href={l.url} rel="noopener" target="_blank">{l.nome}</a></li>)}
@@ -135,6 +190,9 @@ const canonical = new URL(caminho, Astro.site);
       btn?.addEventListener('click', () => {
         const aberto = menu?.classList.toggle('aberto');
         btn.setAttribute('aria-expanded', String(!!aberto));
+      });
+      document.querySelectorAll('.menu > li > button').forEach((b) => {
+        b.addEventListener('click', () => b.parentElement?.classList.toggle('aberto'));
       });
       // Esconde eventos que já passaram (o site é estático, então isso é feito no navegador).
       const hoje = new Date();

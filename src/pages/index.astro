@@ -3,23 +3,65 @@ import Base from '../layouts/Base.astro';
 import MissasHoje from '../components/MissasHoje.astro';
 import NoticiaCard from '../components/NoticiaCard.astro';
 import ListaEventos from '../components/ListaEventos.astro';
+import TituloOrnado from '../components/TituloOrnado.astro';
 import Icone from '../components/Icone.astro';
-import { paroquia, getComunidades, getNoticias, getEventos, nomeComunidade } from '../lib/data';
+import { paroquia, getComunidades, getNoticias, getEventos, nomeComunidade, ordenarHorarios, diasDaSemana } from '../lib/data';
 
 const comunidades = await getComunidades();
-const noticias = (await getNoticias()).slice(0, 6);
+const noticias = (await getNoticias()).slice(0, 3);
 const eventos = await getEventos();
+const matriz = comunidades[0];
+const missas = matriz ? ordenarHorarios(matriz.data.missas) : [];
+const domingo = missas.filter((m) => diasDaSemana(m.dia).includes(0));
+const semana = missas.filter((m) => !diasDaSemana(m.dia).includes(0));
+const confissoes = matriz ? ordenarHorarios(matriz.data.confissoes) : [];
+const tel = paroquia.telefone.replace(/\D/g, '');
+
+const destaques = [
+  { href: '/batismo/', texto: 'Batismo', icone: 'agua' },
+  { href: '/catequese/', texto: 'Catequese', icone: 'livro' },
+  { href: '/matrimonio/', texto: 'Matrimônio', icone: 'aliancas' },
+  { href: '/confissoes/', texto: 'Confissões', icone: 'maos' },
+  { href: '/pastorais/', texto: 'Pastorais', icone: 'pessoas' },
+  { href: '/dizimo/', texto: 'Dízimo', icone: 'coracao' },
+];
 ---
 <Base imagem={paroquia.imagem_capa || null}>
-  <section class:list={['hero', { 'com-imagem': !!paroquia.imagem_capa }]} style={paroquia.imagem_capa ? `background-image:url('${paroquia.imagem_capa}')` : undefined}>
+  <section class:list={['hero', 'classico', { 'com-imagem': !!paroquia.imagem_capa }]} style={paroquia.imagem_capa ? `background-image:url('${paroquia.imagem_capa}')` : undefined}>
     <div class="container">
-      <div class="eyebrow">{paroquia.arquidiocese}</div>
+      <div class="eyebrow">{paroquia.local}</div>
       <h1>{paroquia.nome}</h1>
+      <div class="ornamento" style="color:#f0c86b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v18M6 9h12" /></svg></div>
       <p class="lema">{paroquia.lema}</p>
       <div class="acoes">
         <a class="btn btn-primario" href="/horarios/">Horários de missas</a>
-        <a class="btn btn-claro" href="/contato/">Fale com a secretaria</a>
+        <a class="btn btn-claro" href="/contato/">Secretaria paroquial</a>
       </div>
+    </div>
+  </section>
+
+  <div class="faixa-cta">
+    <a href="/eventos/">Clique para ver a <b>programação da semana</b> →</a>
+  </div>
+
+  <section class="section">
+    <div class="container">
+      <TituloOrnado titulo="Horários de missas" subtitulo={matriz ? `${matriz.data.nome}` : undefined} />
+      <div class="horarios-destaque">
+        <div>
+          <h3>Domingo</h3>
+          <ul>{domingo.map((m) => <li><span>Santa Missa{m.observacao && <small>{m.observacao}</small>}</span><b>{m.hora}</b></li>)}</ul>
+        </div>
+        <div>
+          <h3>Semana e sábado</h3>
+          <ul>{semana.map((m) => <li><span>{m.dia}{m.observacao && <small>{m.observacao}</small>}</span><b>{m.hora}</b></li>)}</ul>
+        </div>
+        <div>
+          <h3>Confissões</h3>
+          <ul>{confissoes.map((m) => <li><span>{m.dia}{m.observacao && <small>{m.observacao}</small>}</span><b>{m.hora}</b></li>)}</ul>
+        </div>
+      </div>
+      <p class="nota">Em feriados e datas festivas os horários podem mudar. <a href="/horarios/">Ver horários de todas as comunidades</a></p>
     </div>
   </section>
 
@@ -27,34 +69,56 @@ const eventos = await getEventos();
 
   <section class="section">
     <div class="container">
-      <div class="section-head">
-        <div><div class="eyebrow">Fique por dentro</div><h2>Notícias e avisos</h2></div>
-        <a class="link-seta" href="/noticias/">Todas as notícias</a>
-      </div>
-      {noticias.length ? (
-        <div class="grid grid-3">
-          {noticias.map((n) => <NoticiaCard noticia={n} rotulo={n.data.comunidade !== 'paroquia' ? nomeComunidade(n.data.comunidade, comunidades) : undefined} />)}
-        </div>
-      ) : <div class="vazio">Nenhuma notícia publicada ainda.</div>}
+      <TituloOrnado titulo="Destaques" subtitulo="Informações sobre sacramentos, pastorais e como participar da vida da paróquia." />
+      <nav class="destaques" aria-label="Destaques">
+        {destaques.map((d) => <a href={d.href}><span class="circulo"><Icone nome={d.icone} tamanho={34} /></span>{d.texto}</a>)}
+      </nav>
     </div>
   </section>
 
   <section class="section section-alt">
     <div class="container">
-      <div class="section-head">
-        <div><div class="eyebrow">Agenda</div><h2>Próximos eventos</h2></div>
-        <a class="link-seta" href="/eventos/">Agenda completa</a>
-      </div>
-      <ListaEventos eventos={eventos} limite={6} />
+      <TituloOrnado titulo="Notícias e avisos" />
+      {noticias.length ? (
+        <div class="grid grid-3">
+          {noticias.map((n) => <NoticiaCard noticia={n} rotulo={n.data.comunidade !== 'paroquia' ? nomeComunidade(n.data.comunidade, comunidades) : undefined} />)}
+        </div>
+      ) : <div class="vazio">Nenhuma notícia publicada ainda.</div>}
+      <p style="text-align:center;margin:28px 0 0"><a class="btn btn-contorno" href="/noticias/">Todas as notícias</a></p>
     </div>
   </section>
 
   <section class="section">
     <div class="container">
-      <div class="section-head">
-        <div><div class="eyebrow">Nossa paróquia</div><h2>Comunidades</h2></div>
-        <a class="link-seta" href="/comunidades/">Ver comunidades</a>
+      <TituloOrnado titulo="Agenda" />
+      <ListaEventos eventos={eventos} limite={4} />
+    </div>
+  </section>
+
+  <section class="section" style="padding-top:0">
+    <div class="container duas-colunas">
+      <div class="bloco bloco-claro">
+        <h2>Secretaria paroquial</h2>
+        <ul class="info-lista">
+          <li><Icone nome="relogio" /><span>{paroquia.secretaria_horario}</span></li>
+          <li><Icone nome="local" /><span>{paroquia.endereco}</span></li>
+          <li><Icone nome="telefone" /><a href={`tel:+55${tel}`}>{paroquia.telefone}</a></li>
+          <li><Icone nome="email" /><a href={`mailto:${paroquia.email}`}>{paroquia.email}</a></li>
+        </ul>
+        {paroquia.whatsapp && <p style="margin:24px 0 0"><a class="btn btn-primario" href={`https://wa.me/${paroquia.whatsapp}`} target="_blank" rel="noopener">Falar pelo WhatsApp</a></p>}
       </div>
+      <div class="bloco bloco-escuro">
+        <h2>Seja dizimista</h2>
+        <p class="citacao">“Cada um dê conforme o impulso do seu coração, sem tristeza nem constrangimento, pois Deus ama quem dá com alegria.” (2Cor 9,7)</p>
+        <p>O dízimo sustenta a evangelização, as comunidades e as obras sociais da paróquia.</p>
+        <p style="margin:24px 0 0"><a class="btn btn-primario" href="/dizimo/">Quero ser dizimista</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <TituloOrnado titulo="Nossas comunidades" />
       <div class="grid grid-3">
         {comunidades.map((c) => (
           <a class="card" href={`/c/${c.id}/`}>
@@ -70,23 +134,27 @@ const eventos = await getEventos();
     </div>
   </section>
 
-  <section class="section section-alt">
-    <div class="container contato-grid">
-      <div>
-        <div class="eyebrow">Secretaria paroquial</div>
-        <h2>Estamos aqui para ajudar</h2>
-        <ul class="info-lista">
-          <li><Icone nome="relogio" /><span>{paroquia.secretaria_horario}</span></li>
-          <li><Icone nome="local" /><span>{paroquia.endereco}</span></li>
-          <li><Icone nome="telefone" /><a href={`tel:+55${paroquia.telefone.replace(/\D/g, '')}`}>{paroquia.telefone}</a></li>
-          <li><Icone nome="email" /><a href={`mailto:${paroquia.email}`}>{paroquia.email}</a></li>
-        </ul>
-        <div class="acoes" style="display:flex;gap:12px;flex-wrap:wrap;margin-top:24px">
-          {paroquia.whatsapp && <a class="btn btn-primario" href={`https://wa.me/${paroquia.whatsapp}`} target="_blank" rel="noopener">Conversar no WhatsApp</a>}
-          <a class="btn btn-contorno" href="/sacramentos/">Batismo, catequese e casamento</a>
-        </div>
+  <section class="section">
+    <div class="container">
+      <div class="atalhos">
+        <a href="/eventos/"><Icone nome="calendario" />Programação</a>
+        <a href="/galeria/"><Icone nome="foto" />Galeria de fotos</a>
+        {paroquia.redes.jornal && <a href={paroquia.redes.jornal} target="_blank" rel="noopener"><Icone nome="jornal" />Jornal da paróquia</a>}
+        {paroquia.redes.youtube && <a href={paroquia.redes.youtube} target="_blank" rel="noopener"><Icone nome="youtube" />Missas no YouTube</a>}
+        <a href="/contato/"><Icone nome="local" />Como chegar</a>
       </div>
-      <iframe class="mapa" src={paroquia.mapa_embed} loading="lazy" title="Mapa da Igreja Matriz" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </section>
+
+  <section class="redes-faixa">
+    <div class="container">
+      <h2>Nossas redes sociais</h2>
+      <div class="redes-grandes">
+        {paroquia.redes.facebook && <a href={paroquia.redes.facebook} aria-label="Facebook" target="_blank" rel="noopener"><Icone nome="facebook" tamanho={22} /></a>}
+        {paroquia.redes.instagram && <a href={paroquia.redes.instagram} aria-label="Instagram" target="_blank" rel="noopener"><Icone nome="instagram" tamanho={22} /></a>}
+        {paroquia.redes.youtube && <a href={paroquia.redes.youtube} aria-label="YouTube" target="_blank" rel="noopener"><Icone nome="youtube" tamanho={22} /></a>}
+        {paroquia.whatsapp && <a href={`https://wa.me/${paroquia.whatsapp}`} aria-label="WhatsApp" target="_blank" rel="noopener"><Icone nome="whatsapp" tamanho={22} /></a>}
+      </div>
     </div>
   </section>
 </Base>
