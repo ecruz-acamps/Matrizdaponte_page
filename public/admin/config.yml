@@ -266,6 +266,7 @@ collections:
               - { name: festa, label: Data da festa, widget: string, required: false, hint: 'Ex.: 28 de outubro' }
               - { name: imagem, label: Imagem do santo, widget: image, required: false, hint: 'Use de preferência uma foto em pé (vertical) da imagem que está na igreja.' }
               - { name: texto, label: Texto, widget: text, required: false }
+              - { name: credito, label: Crédito da imagem, widget: string, required: false, hint: 'Ex.: Foto: Fulano ou Pintura de ... (domínio público)' }
           - name: aviso
             label: Faixa de aviso no topo do site
             widget: object

@@ -12,15 +12,17 @@
       "nome": "São Judas Tadeu",
       "titulo": "Apóstolo de Jesus",
       "festa": "28 de outubro",
-      "imagem": "/img/sao-judas-tadeu.svg",
-      "texto": "Um dos doze apóstolos, parente de Jesus segundo a tradição e autor de uma das cartas do Novo Testamento. Anunciou o Evangelho com coragem até o martírio. É invocado como o santo das causas difíceis e desesperadas."
+      "imagem": "/img/sao-judas-tadeu.jpg",
+      "texto": "Um dos doze apóstolos, parente de Jesus segundo a tradição e autor de uma das cartas do Novo Testamento. Anunciou o Evangelho com coragem até o martírio. É invocado como o santo das causas difíceis e desesperadas.",
+      "credito": "Pintura de Anthony van Dyck (c. 1618–1620), domínio público"
     },
     {
       "nome": "São João Batista",
       "titulo": "Precursor do Senhor",
       "festa": "24 de junho",
-      "imagem": "/img/sao-joao-batista.svg",
-      "texto": "Filho de Isabel e Zacarias, preparou o caminho do Messias pregando a conversão e batizando no rio Jordão. Apontou Jesus como o Cordeiro de Deus e deu a vida pela verdade."
+      "imagem": "/img/sao-joao-batista.jpg",
+      "texto": "Filho de Isabel e Zacarias, preparou o caminho do Messias pregando a conversão e batizando no rio Jordão. Apontou Jesus como o Cordeiro de Deus e deu a vida pela verdade.",
+      "credito": "Pintura de Leonardo da Vinci (c. 1513–1516), domínio público"
     }
   ],
   "aviso": {

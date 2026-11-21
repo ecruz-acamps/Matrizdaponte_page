@@ -21,6 +21,7 @@ const padroeiros = paroquia.padroeiros ?? [];
               {p.festa && <div class="festa">Festa: {p.festa}</div>}
               {p.texto && <p>{p.texto}</p>}
               <p class="rogai">{p.nome}, rogai por nós.</p>
+              {p.credito && <p class="credito">{p.credito}</p>}
             </div>
           </article>
         ))}

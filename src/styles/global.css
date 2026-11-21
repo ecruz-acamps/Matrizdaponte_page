@@ -309,9 +309,12 @@ a.card:hover { transform: translateY(-2px); box-shadow: var(--sombra); color: in
 
 /* Padroeiros como fundo do título da página inicial */
 .hero-santos { position: absolute; inset: 0; pointer-events: none; }
-.hero-santos img { position: absolute; bottom: 0; height: 118%; width: auto; max-width: 46%; object-fit: cover; opacity: .55; }
+.hero-santos img { position: absolute; top: 0; bottom: 0; height: 100%; width: 46%; object-fit: cover; }
 .hero-santos img.esq { left: 0; -webkit-mask-image: linear-gradient(90deg, #000 35%, transparent 100%); mask-image: linear-gradient(90deg, #000 35%, transparent 100%); }
 .hero-santos img.dir { right: 0; -webkit-mask-image: linear-gradient(270deg, #000 35%, transparent 100%); mask-image: linear-gradient(270deg, #000 35%, transparent 100%); }
 .hero.classico::after { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse at center, rgb(18 35 59 / 70%) 0%, rgb(18 35 59 / 25%) 70%); pointer-events: none; }
 .hero.classico .container { z-index: 2; }
 @media (max-width: 800px) { .hero-santos img { max-width: 60%; opacity: .35; } }
+.moldura img { object-position: center 25%; }
+.padroeiro .credito { font-size: .72rem; color: var(--texto-suave); opacity: .8; margin-top: 8px; }
+.hero-santos img { object-position: center 25%; opacity: .6; }
